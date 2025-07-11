@@ -105,17 +105,6 @@ export const UserList: React.FC = () => {
   
   return (
     <>
-      <div className="flex justify-between items-center mb-4">
-        <div>
-          <button
-            onClick={handleRefresh}
-            className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-          >
-            <RefreshCw className="w-4 h-4 mr-2" />
-            Refresh
-          </button>
-        </div>
-      </div>
       
       <UserFilters
         users={users}
