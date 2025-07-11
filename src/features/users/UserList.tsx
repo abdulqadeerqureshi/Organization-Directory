@@ -1,4 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { RefreshCw } from 'lucide-react';
 import { UserCard } from './UserCard';
 import { UserDetailsSidebar } from './UserDetailsSidebar';
 import { UserFilters } from './UserFilters';
@@ -7,11 +9,13 @@ import { Loader } from '../../components/Loader';
 import { ErrorMessage } from '../../components/ErrorMessage';
 import { useUsers } from './useUsers';
 import { usePagination } from '../../hooks/usePagination';
+import { USERS_QUERY_KEY } from '../../hooks/queries/useUsersQuery';
 import { User } from './users.types';
 
 const ITEMS_PER_PAGE = 10;
 
 export const UserList: React.FC = () => {
+  const queryClient = useQueryClient();
   const { users, loading, error, refetch } = useUsers();
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -58,6 +62,11 @@ export const UserList: React.FC = () => {
     setSelectedUser(null);
   };
 
+  const handleRefresh = () => {
+    // Invalidate and refetch users query
+    queryClient.invalidateQueries({ queryKey: USERS_QUERY_KEY });
+  };
+
   const handleClearFilters = () => {
     setSearchTerm('');
     setSelectedRole('');
@@ -81,7 +90,7 @@ export const UserList: React.FC = () => {
     return (
       <ErrorMessage
         message={error}
-        onRetry={refetch}
+        onRetry={handleRefresh}
       />
     );
   }
@@ -96,6 +105,18 @@ export const UserList: React.FC = () => {
   
   return (
     <>
+      <div className="flex justify-between items-center mb-4">
+        <div>
+          <button
+            onClick={handleRefresh}
+            className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+          >
+            <RefreshCw className="w-4 h-4 mr-2" />
+            Refresh
+          </button>
+        </div>
+      </div>
+      
       <UserFilters
         users={users}
         searchTerm={searchTerm}

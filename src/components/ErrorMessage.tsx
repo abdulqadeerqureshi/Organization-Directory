@@ -1,12 +1,13 @@
 import React from 'react';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, RefreshCw } from 'lucide-react';
 
 interface ErrorMessageProps {
   message: string;
   onRetry?: () => void;
+  isRetrying?: boolean;
 }
 
-export const ErrorMessage: React.FC<ErrorMessageProps> = ({ message, onRetry }) => {
+export const ErrorMessage: React.FC<ErrorMessageProps> = ({ message, onRetry, isRetrying = false }) => {
   return (
     <div className="flex flex-col items-center justify-center p-8 text-center">
       <AlertCircle className="w-12 h-12 text-red-500 mb-4" />
@@ -15,9 +16,17 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({ message, onRetry }) 
       {onRetry && (
         <button
           onClick={onRetry}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          disabled={isRetrying}
+          className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-          Try again
+          {isRetrying ? (
+            <>
+              <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+              Retrying...
+            </>
+          ) : (
+            'Try again'
+          )}
         </button>
       )}
     </div>
